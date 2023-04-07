@@ -1,0 +1,19 @@
+﻿  imgui.cpp
+  imgui_draw.cpp
+  imgui_impl_glfw.cpp
+  imgui_impl_opengl3.cpp
+  imgui_tables.cpp
+  imgui_widgets.cpp
+  main.cpp
+C:\VSrepos\Metaphyisca\Engine\GUI\Window.hpp(19,36): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\VSrepos\Metaphyisca\Engine\GUI\Window.hpp(20,38): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\VSrepos\Metaphyisca\Engine\GUI\GUI.hpp(25,70): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VSrepos\Metaphyisca\Engine\GUI\GUI.hpp(25,50): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VSrepos\Metaphyisca\Engine\GUI\GUI.hpp(90,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\VSrepos\Metaphyisca\Engine\GUI\GUI.hpp(90,35): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Generating Code...
+  Engine.vcxproj -> C:\VSrepos\Metaphyisca\Output\Binaries\Debug\Engine.exe
+  C:\VSrepos\Metaphyisca\Libraries\bin\glfw3.dll
+  1 File(s) copied
+  C:\VSrepos\Metaphyisca\Libraries\bin\glew32.dll
+  1 File(s) copied
