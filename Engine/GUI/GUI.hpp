@@ -15,7 +15,7 @@ using namespace ImGui;
 class GUI {
 public:
 
-	GUI(const Window& window) : m_windowRef(window), m_viewportResized(false) {
+	GUI(const Window& window) : m_windowRef(window)  {
         CreateContext();
         ImGui_ImplGlfw_InitForOpenGL(window.getWindow(), true);
         ImGui_ImplOpenGL3_Init("#version 460");
@@ -29,6 +29,9 @@ public:
 
         m_viewportDimensions = ImVec2(800, 600);
         m_viewportFlags =  ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse;
+        m_viewportResized = false;
+        m_viewportHovered = false;
+        m_viewportRightClicked = false;
     };
 
     void shutdown() {
@@ -77,6 +80,10 @@ public:
             m_viewportResized = true;
         }
 
+        m_viewportHovered = IsWindowHovered();
+        m_viewportRightClicked = IsMouseDown(ImGuiMouseButton_Right);
+        
+
         //TODO: have this Text in the Metrics window
         //Text("Res: %d, %d", (int)m_viewportDimensions.x, (int)m_viewportDimensions.y);
 
@@ -94,6 +101,8 @@ public:
     int getViewportHeight() const { return static_cast<int>(m_viewportDimensions.y); }
 
     bool isViewportResized() const { return m_viewportResized; }
+    bool isViewportHovered() const { return m_viewportHovered; }
+    bool isViewportRightClicked() const { return m_viewportRightClicked; }
     void clearViewportResizeFlag() { m_viewportResized = false; }
 
 private:
@@ -110,5 +119,7 @@ private:
     ImVec2 m_viewportDimensions;
     unsigned int m_viewportFlags;
     bool m_viewportResized;
+    bool m_viewportHovered;
+    bool m_viewportRightClicked;
 
 };

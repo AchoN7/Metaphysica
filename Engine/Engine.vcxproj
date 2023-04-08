@@ -123,6 +123,8 @@ xcopy /y "$(SolutionDir)Libraries\bin\glew32.dll" "$(TargetDir)"</Command>
     <ClInclude Include="Dependencies\imgui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\imgui\imstb_truetype.h" />
     <ClInclude Include="Engine.hpp" />
+    <ClInclude Include="Graphics\Camera.hpp" />
+    <ClInclude Include="Graphics\GLdebug.hpp" />
     <ClInclude Include="Graphics\Renderer.hpp" />
     <ClInclude Include="Core\Logger.hpp" />
     <ClInclude Include="GUI\Console.hpp" />

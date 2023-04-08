@@ -7,7 +7,10 @@
 #include <sstream>
 
 #include <GL/glew.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
+#include "GLdebug.hpp"
 #include "Core/Logger.hpp"
 
 class Renderer {
@@ -16,8 +19,11 @@ public:
 	Renderer(int vpWidth, int vpHeight) {
 		glewInit();
 
+#ifdef _DEBUG
+        GLdebug::checkGLversion();
         glEnable(GL_DEBUG_OUTPUT);
-        glDebugMessageCallback(debugCallback, nullptr);
+        glDebugMessageCallback(GLdebug::debugCallback, nullptr);
+#endif
 
         float vertices[] = { 0.5f, 0.5f, 0.0f,  // top right
                             0.5f, -0.5f, 0.0f,  // bottom right
@@ -32,13 +38,13 @@ public:
 
         glBindVertexArray(m_VAO);
 
-        glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        GL(glBindBuffer(GL_ARRAY_BUFFER, m_VBO));
+        GL(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+        GL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO));
+        GL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        GL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
         glEnableVertexAttribArray(0);
 
         // Compile and link shaders
@@ -49,21 +55,21 @@ public:
         unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
         std::string vxShaderCode = readShaderSource(vertexShaderPath);
         const char* vxShaderCodePtr = vxShaderCode.c_str();
-        glShaderSource(vertexShader, 1, &vxShaderCodePtr, nullptr);
-        glCompileShader(vertexShader);
+        GL(glShaderSource(vertexShader, 1, &vxShaderCodePtr, nullptr));
+        GL(glCompileShader(vertexShader));
 
         // Fragment shader
         unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
         std::string frShaderCode = readShaderSource(fragmentShaderPath);
         const char* frShaderCodePtr = frShaderCode.c_str();
-        glShaderSource(fragmentShader, 1, &frShaderCodePtr, nullptr);
-        glCompileShader(fragmentShader);
+        GL(glShaderSource(fragmentShader, 1, &frShaderCodePtr, nullptr));
+        GL(glCompileShader(fragmentShader));
 
         // Shader program
         m_program = glCreateProgram();
-        glAttachShader(m_program, vertexShader);
-        glAttachShader(m_program, fragmentShader);
-        glLinkProgram(m_program);
+        GL(glAttachShader(m_program, vertexShader));
+        GL(glAttachShader(m_program, fragmentShader));
+        GL(glLinkProgram(m_program));
 
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
@@ -84,7 +90,7 @@ public:
 
         glGenRenderbuffers(1, &m_RBO);
         glBindRenderbuffer(GL_RENDERBUFFER, m_RBO);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, vpWidth, vpHeight);
+        GL(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, vpWidth, vpHeight));
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_RBO);
@@ -128,6 +134,13 @@ public:
 
     }
 
+    void setMat4(const char* name, const glm::mat4& mat) const {
+        GL(glUseProgram(m_program));
+
+        GLint location = glGetUniformLocation(m_program, name);
+        GL(glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat)));
+    }
+
     void render() {
         glUseProgram(m_program);
         glBindVertexArray(m_VAO);
@@ -140,7 +153,6 @@ public:
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glBindVertexArray(0);
-
     }
 
     GLuint getImage() const { return m_image; }
@@ -167,11 +179,6 @@ private:
         std::stringstream buffer;
         buffer << file.rdbuf();
         return buffer.str();
-    }
-
-    static void debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity,
-        GLsizei length, const GLchar* message, const void* userParam) {
-        Logger::log(LogType::OPENGL, message);
     }
 
 };

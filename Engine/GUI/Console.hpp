@@ -17,8 +17,9 @@ public:
 
 	static void renderConsole() {
         static const float indentSize = GetStyle().IndentSpacing;
+        static ImGuiWindowFlags consoleFlags = ImGuiWindowFlags_HorizontalScrollbar;
 
-        if (Begin("Console", nullptr)) {
+        if (Begin("Console", nullptr, consoleFlags)) {
             Separator();
 
             Indent(indentSize);
@@ -50,6 +51,7 @@ public:
                 TextColored(logTypeColor, "%s", logTypeStr.c_str());
                 SameLine();
                 TextUnformatted(msg.c_str());
+                Separator();
             }
 
             Unindent(indentSize);
