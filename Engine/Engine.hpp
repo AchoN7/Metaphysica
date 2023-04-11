@@ -3,21 +3,27 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "GUI/Window.hpp"
+#include "Core/Window.hpp"
 #include "GUI/GUI.hpp"
-#include "Graphics/Renderer.hpp"
+
 #include "Graphics/Camera.hpp"
+#include "Graphics/Renderer.hpp"
+
+#include "Objects/Sphere.hpp"
 
 class Engine {
 public:
 
-	Engine() : m_window(), m_GUI(m_window), 
-		m_renderer(m_GUI.getViewportWidth(), m_GUI.getViewportHeight()), m_camera() 
+	Engine() : m_window(), m_renderer(), m_GUI(m_window, m_renderer), m_camera(),
+		m_sphere(glm::vec4(0.4f, 0.1f, 0.96f, 1.0f), SphereQuality::HIGH) 
 	{
 		glfwSetWindowUserPointer(m_window.getWindow(), this);
 		glfwSetWindowSizeCallback(m_window.getWindow(), Engine::windowSizeCallback);
 		//glfwSetCursorPosCallback(m_window.getWindow(), Engine::cursorCallback);
 		glfwSetScrollCallback(m_window.getWindow(), Engine::scrollCallback);
+
+		m_renderer.recreateFramebuffer(m_GUI.getViewportWidth(), m_GUI.getViewportHeight());
+		m_renderer.bindSphere(m_sphere);
 	}
 
 	void shutdown() {
@@ -37,7 +43,6 @@ public:
 			update();
 			render();
 
-			
 		}
 	}
 	
@@ -47,6 +52,7 @@ private:
 	GUI m_GUI;
 	Renderer m_renderer;
 	Camera m_camera;
+	Sphere m_sphere; //temp
 
 	float m_deltaTime = 0.0f;
 	float m_lastFrame = 0.0f;
@@ -79,23 +85,22 @@ private:
 			processCursor(xpos, ypos);
 		}
 			
-
-		mat4 model = mat4(1.0f);
-		mat4 view = m_camera.getViewMatrix();
-		mat4 projection = m_camera.getProjectionMatrix(m_GUI.getViewportWidth(), m_GUI.getViewportHeight());
-		
-		m_renderer.setMat4("model", model);
-		m_renderer.setMat4("view", view);
-		m_renderer.setMat4("projection", projection);
-		
-
 	}
 
 	void render() {
 		glViewport(0, 0, m_GUI.getViewportWidth(), m_GUI.getViewportHeight());
 
-		m_renderer.render();
+		mat4 model = mat4(1.0f);
+		mat4 view = m_camera.getViewMatrix();
+		mat4 projection = m_camera.getProjectionMatrix(m_GUI.getViewportWidth(), m_GUI.getViewportHeight());
 
+		
+		m_renderer.setMat4("model", model);
+		m_renderer.setMat4("view", view);
+		m_renderer.setMat4("projection", projection);
+		m_renderer.setVec4("color", m_sphere.color);
+
+		m_renderer.renderSphere(m_sphere);
 		m_GUI.render(m_renderer.getImage());
 
 		m_window.swapBuffers();
@@ -130,6 +135,7 @@ private:
 		if (m_GUI.isViewportHovered() && m_GUI.isViewportRightClicked()) {
 			m_camera.mouseLook(xoffset, yoffset, true);
 		}
+		
 			
 	}
 
@@ -137,7 +143,7 @@ private:
 		m_camera.scrollZoom(static_cast<float>(yoffset));
 	}
 
-	//////////CALLBACKS
+	//////////GLFW CALLBACKS
 	static void windowSizeCallback(GLFWwindow* window, int width, int height) {
 		Engine* engine = static_cast<Engine*>(glfwGetWindowUserPointer(window));
 		engine->updateDimensions(width, height);

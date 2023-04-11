@@ -127,9 +127,12 @@ xcopy /y "$(SolutionDir)Libraries\bin\glew32.dll" "$(TargetDir)"</Command>
     <ClInclude Include="Graphics\GLdebug.hpp" />
     <ClInclude Include="Graphics\Renderer.hpp" />
     <ClInclude Include="Core\Logger.hpp" />
-    <ClInclude Include="GUI\Console.hpp" />
-    <ClInclude Include="GUI\Window.hpp" />
+    <ClInclude Include="GUI\Widgets\Console.hpp" />
+    <ClInclude Include="Core\Window.hpp" />
     <ClInclude Include="GUI\GUI.hpp" />
+    <ClInclude Include="GUI\Widgets\Metrics.hpp" />
+    <ClInclude Include="GUI\Widgets\Settings.hpp" />
+    <ClInclude Include="Objects\Sphere.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

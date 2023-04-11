@@ -43,7 +43,7 @@
     <None Include="Dependencies\imgui\.editorconfig" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GUI\Window.hpp">
+    <ClInclude Include="Core\Window.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\imgui\imgui.h">
@@ -85,13 +85,22 @@
     <ClInclude Include="Core\Time.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GUI\Console.hpp">
+    <ClInclude Include="GUI\Widgets\Console.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Camera.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\GLdebug.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\Sphere.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\Widgets\Metrics.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\Widgets\Settings.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

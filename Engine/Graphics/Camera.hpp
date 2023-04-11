@@ -15,7 +15,7 @@ public:
         RIGHT
     };
 
-    Camera(vec3 position = vec3(0.0f, 0.0f, 2.0f)) {
+    Camera(vec3 position = vec3(0.0f, 0.0f, 3.0f)) {
         m_position = position;
         m_front = vec3(0.0f, 0.0f, -1.0f);
         m_up = vec3(0.0f, 1.0f, 0.0f);
@@ -26,7 +26,7 @@ public:
         m_pitch = 0.0f;
 
         m_movementSpeed = 2.5f;
-        m_sensitivity = 0.1f;
+        m_sensitivity = 0.2f;
         m_zoom = 45.0f;
 
         updateCameraVectors();
@@ -37,7 +37,7 @@ public:
     }
 
     mat4 getProjectionMatrix(int vpWidth, int vpHeight) {
-        return perspective(radians(m_zoom), (float)vpWidth / (float)vpHeight, 0.1f, 100.0f);
+        return perspective(radians(m_zoom), (float)vpWidth / (float)vpHeight, 0.01f, 100.0f);
     }
 
     void move(Direction direction, float deltaTime) {
