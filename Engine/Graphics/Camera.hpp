@@ -15,29 +15,40 @@ public:
         RIGHT
     };
 
-    Camera(vec3 position = vec3(0.0f, 0.0f, 3.0f)) {
+    Camera(vec3 position = vec3(0.0f, 0.0f, 1.0f)) {
         m_position = position;
+        m_worldup = vec3(0.0f, 1.0f, 0.0f);
         m_front = vec3(0.0f, 0.0f, -1.0f);
-        m_up = vec3(0.0f, 1.0f, 0.0f);
-        m_right = vec3();
-        m_worldup = m_up;
-
+        m_up = m_worldup;
+        m_right = glm::vec3();
+        
         m_yaw = -90.0f,
         m_pitch = 0.0f;
 
-        m_movementSpeed = 2.5f;
+        m_movementSpeed = 20.5f;
         m_sensitivity = 0.2f;
         m_zoom = 45.0f;
 
         updateCameraVectors();
     }
-    
+
+    void setPosition(glm::vec3 newPos) { m_position = newPos; }
+    void setLimits()
+
     mat4 getViewMatrix() {
         return lookAt(m_position, m_position + m_front, m_up);
     }
 
-    mat4 getProjectionMatrix(int vpWidth, int vpHeight) {
-        return perspective(radians(m_zoom), (float)vpWidth / (float)vpHeight, 0.01f, 100.0f);
+    mat4 getProjectionMatrix() {
+        return perspective(radians(m_zoom), m_aspectRatio, 0.01f, 20000.0f);
+    }
+
+    glm::vec3 getPosition() const { return m_position; }
+
+    void onViewportResized(int vpWidth, int vpHeight) {
+        m_vpWidth = static_cast<float>(vpWidth);
+        m_vpHeight = static_cast<float>(vpHeight);
+        m_aspectRatio = m_vpWidth / m_vpHeight;
     }
 
     void move(Direction direction, float deltaTime) {
@@ -79,6 +90,10 @@ public:
     }
 
 private:
+
+    float m_vpWidth;
+    float m_vpHeight;
+    float m_aspectRatio;
 
     vec3 m_position;
     vec3 m_front;

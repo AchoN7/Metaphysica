@@ -38,6 +38,3 @@ private:
     static inline std::list<std::tuple<LogType, std::string>> s_logEntries;
     static inline std::mutex s_mutex;
 };
-
-//static, gets logs from all sources
-//prints them to the gui console

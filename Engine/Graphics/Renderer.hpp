@@ -1,62 +1,26 @@
 #pragma once
 
-#include <iostream>
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GLdebug.hpp"
+#include "Shader.hpp"
+#include "Camera.hpp"
 #include "Core/Logger.hpp"
 
-#include "Objects/Sphere.hpp"
-
+#include "World/World.hpp"
 
 class Renderer {
 public:
 
 	Renderer() {
-		glewInit();
 
 #ifdef _DEBUG
         GLdebug::checkGLversion();
         glEnable(GL_DEBUG_OUTPUT);
         glDebugMessageCallback(GLdebug::debugCallback, nullptr);
 #endif
-        glGenVertexArrays(1, &m_VAO);
-
-        //compile shaders and link shader program
-        const char* vertexShaderPath = "Shaders/Vertex.shader";
-        const char* fragmentShaderPath = "Shaders/Fragment.shader";
-
-        // Vertex shader
-        unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-        std::string vxShaderCode = readShaderSource(vertexShaderPath);
-        const char* vxShaderCodePtr = vxShaderCode.c_str();
-        GL(glShaderSource(vertexShader, 1, &vxShaderCodePtr, nullptr));
-        GL(glCompileShader(vertexShader));
-
-        // Fragment shader
-        unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-        std::string frShaderCode = readShaderSource(fragmentShaderPath);
-        const char* frShaderCodePtr = frShaderCode.c_str();
-        GL(glShaderSource(fragmentShader, 1, &frShaderCodePtr, nullptr));
-        GL(glCompileShader(fragmentShader));
-
-        // Shader program
-        m_program = glCreateProgram();
-        GL(glAttachShader(m_program, vertexShader));
-        GL(glAttachShader(m_program, fragmentShader));
-        GL(glLinkProgram(m_program));
-
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
-        
-        Logger::log(LogType::INFO, "Renderer initialized successfully!");
 	}
 
     void recreateFramebuffer(int vpWidth, int vpHeight) {
@@ -90,116 +54,162 @@ public:
 
         m_vpWidth = vpWidth;
         m_vpHeight = vpHeight;
+        glViewport(0, 0, m_vpWidth, m_vpHeight);
+        glClearColor(0.0f, 0.0f, 0.3f, 1.0f);
+    } 
 
-    }
-
-    void bindSphere(Sphere& sphere) {
-        GL(glBindVertexArray(m_VAO));
-
-        glGenBuffers(1, &sphere.VBO);
-        glGenBuffers(1, &sphere.EBO);
-
-        glBindBuffer(GL_ARRAY_BUFFER, sphere.VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * sphere.vertices.size(), sphere.vertices.data(), GL_STATIC_DRAW);
-
-        GL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sphere.EBO));
-        GL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * sphere.indecies.size(), sphere.indecies.data(), GL_STATIC_DRAW));
-
-        GL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0));
-        glEnableVertexAttribArray(0);
-
-        glBindVertexArray(0);
-    }
-
-    void detachSphere(Sphere& sphere) {
-        glBindVertexArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-        GL(glDeleteBuffers(1, &sphere.VBO));
-        GL(glDeleteBuffers(1, &sphere.EBO));
-        sphere.vertices.clear();
-        sphere.indecies.clear();
-    }
-
-    void renderSphere(const Sphere& sphere) {
-
-        GL(glUseProgram(m_program));
-        GL(glBindVertexArray(m_VAO));
-
+    void renderWorld(World& world) {
         GL(glBindFramebuffer(GL_FRAMEBUFFER, m_FBO));
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
 
-        GL(glDrawElements(GL_TRIANGLES, sphere.indecies.size(), GL_UNSIGNED_INT, 0));
+        glm::mat4 view = world.getCamera().getViewMatrix();
+        glm::mat4 projection = world.getCamera().getProjectionMatrix();
+        //glm::vec3 lightPos = world.getStarLight().position;
+        glm::vec3 lightDir = world.getStarLight().direction;
+        glm::vec3 lightColor = world.getStarLight().color;
+        glm::vec3 camPos = world.getCamera().getPosition();
 
+        m_starProgram.bind();
+        m_starProgram.setUniformMat4("u_view", view);
+        m_starProgram.setUniformMat4("u_projection", projection);
+        renderStar(world.getStar());
+        m_starProgram.unbind();
+
+        m_modelProgram.bind();
+        m_modelProgram.setUniformMat4("u_view", view);
+        m_modelProgram.setUniformMat4("u_projection", projection);
+        //m_modelProgram.setUniformVec3("u_lightPosition", lightPos);
+        m_modelProgram.setUniformVec3("u_lightDirection", lightDir);
+        m_modelProgram.setUniformVec3("u_lightColor", lightColor);
+        m_modelProgram.setUniformVec3("u_cameraPosition", camPos);
+
+        renderModel(world.getGround());
+
+        for (auto& model : world.getModels()) {
+            renderModel(model);
+        }
+       
+        m_modelProgram.unbind();
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glBindVertexArray(0);
     }
 
-    void render() {
-        GL(glUseProgram(m_program));
-        GL(glBindVertexArray(m_VAO));
-        
-        GL(glBindFramebuffer(GL_FRAMEBUFFER, m_FBO));
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        GL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0));
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glBindVertexArray(0);
-    }
-
-    void setVec4(const char* name, const glm::vec4& vec) const {
-        GL(glUseProgram(m_program));
-
-        GLint location = glGetUniformLocation(m_program, name);
-        GL(glUniform4fv(location, 1, glm::value_ptr(vec)));
-        
-    }
-
-    void setMat4(const char* name, const glm::mat4& mat) const {
-        GL(glUseProgram(m_program));
-
-        GLint location = glGetUniformLocation(m_program, name);
-        GL(glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(mat)));
-    }
-
-    void wireframeMode(bool shouldTurnOn) {
-        if (shouldTurnOn)
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        else 
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    }
-
+    Shader& getStarProgram() { return m_starProgram; }
+    Shader& getModelProgram() { return m_modelProgram; }
     GLuint getImage() const { return m_image; }
 
     void shutdown() {
-        glDeleteVertexArrays(1, &m_VAO);
-        glDeleteProgram(m_program);
+        if (glIsTexture(m_image)) glDeleteTextures(1, &m_image);
+        if (glIsRenderbuffer(m_RBO)) glDeleteRenderbuffers(1, &m_RBO);
+        if (glIsFramebuffer(m_FBO)) glDeleteFramebuffers(1, &m_FBO);
     }
+
+#pragma region ** STATICS **
+
+    static void bindModel(Model& model) {
+        auto& mesh = *model.getMesh();
+
+        glGenVertexArrays(1, &mesh.VAO);
+        glBindVertexArray(mesh.VAO);
+
+        glGenBuffers(1, &mesh.VBO);
+        glBindBuffer(GL_ARRAY_BUFFER, mesh.VBO);
+        GL(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * mesh.vertices.size(), mesh.vertices.data(), GL_STATIC_DRAW));
+
+        glGenBuffers(1, &mesh.EBO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.EBO);
+        GL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * mesh.indices.size(), mesh.indices.data(), GL_STATIC_DRAW));
+
+        // Position attribute
+        glEnableVertexAttribArray(0);
+        GL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position)));
+
+        // Normal attribute
+        glEnableVertexAttribArray(1);
+        GL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal)));
+
+        glBindVertexArray(0);
+    }
+
+    static void unbindObject(Model& model) {
+        auto& mesh = *model.getMesh();
+
+        if (mesh.VAO != 0) {
+            glBindVertexArray(mesh.VAO);
+
+            if (mesh.VBO != 0) {
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+                glDeleteBuffers(1, &mesh.VBO);
+                mesh.VBO = 0;
+            }
+
+            if (mesh.EBO != 0) {
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+                glDeleteBuffers(1, &mesh.EBO);
+                mesh.EBO = 0;
+            }
+
+            glBindVertexArray(0);
+            glDeleteVertexArrays(1, &mesh.VAO);
+            mesh.VAO = 0;
+        }
+
+    }
+
+#pragma endregion
+
+#pragma region ** OPENGL SWITCHES **
+
+    void enableDepthMask() { glDepthMask(GL_TRUE); }
+    void enableBackfaceCull() { glEnable(GL_CULL_FACE); }
+
+    void disableDepthMask() { glDepthMask(GL_FALSE); }
+    void disableBackfaceCull() { glDisable(GL_CULL_FACE); }
+
+#pragma endregion
 
 private:
 
-	GLuint m_program;
+    Shader m_modelProgram;
+    Shader m_starProgram;
 
-	GLuint m_image;
-	GLuint m_VAO;
-	//GLuint m_VBO;
-	GLuint m_FBO;
-	GLuint m_RBO;
-    //GLuint m_EBO;
-
-    int m_vpWidth;
-    int m_vpHeight;
+	GLuint m_image = 0;
+	GLuint m_FBO = 0;
+    GLuint m_RBO = 0;
 	
-    static std::string readShaderSource(const char* shaderPath) {
-        //currently assumes correct path to shader
-        std::ifstream file(shaderPath);
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-        return buffer.str();
+    int m_vpWidth = 0;
+    int m_vpHeight = 0;
+
+    void renderStar(Model& star) {
+        auto& mesh = *star.getMesh();
+        auto& material = star.getMaterial();
+
+        m_starProgram.setUniformMat4("u_model", star.getModelMatrix());
+        m_starProgram.setUniformVec3("u_starColor", material.color);
+
+        
+        disableDepthMask();
+        GL(glBindVertexArray(mesh.VAO));
+
+        GL(glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0));
+
+        glBindVertexArray(0);
+        enableDepthMask();
     }
 
+    void renderModel(Model& model) {
+        auto& mesh = *model.getMesh();
+        auto& material = model.getMaterial();
+
+        m_modelProgram.setUniformMat4("u_model", model.getModelMatrix());
+        m_modelProgram.setUniformVec3("u_modelColor", material.color);
+
+        GL(glBindVertexArray(mesh.VAO));
+
+        GL(glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0));
+
+        glBindVertexArray(0);
+    }
+	
 };
 

@@ -20,6 +20,7 @@ public:
 	void display() {
             
         static const float indentSize = GetStyle().IndentSpacing;
+        float maxWidth = GetContentRegionAvail().x;
 
         Separator();
 
@@ -49,9 +50,11 @@ public:
                 logTypeStr = "[OPENGL] ";
             }
 
+            PushItemWidth(maxWidth);
             TextColored(logTypeColor, "%s", logTypeStr.c_str());
             SameLine();
             TextUnformatted(msg.c_str());
+            PopItemWidth();
             Separator();
         }
 

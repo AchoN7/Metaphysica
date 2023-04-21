@@ -38,9 +38,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\Vertex.shader" />
-    <None Include="Shaders\Fragment.shader" />
     <None Include="Dependencies\imgui\.editorconfig" />
+    <None Include="Shaders\vx_Model.shader" />
+    <None Include="Shaders\fr_Model.shader" />
+    <None Include="Shaders\vx_Star.shader" />
+    <None Include="Shaders\fr_Star.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Window.hpp">
@@ -94,13 +96,28 @@
     <ClInclude Include="Graphics\GLdebug.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Objects\Sphere.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GUI\Widgets\Metrics.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GUI\Widgets\Settings.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Model.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Generators.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\Mesh.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="World\World.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Shader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Light.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

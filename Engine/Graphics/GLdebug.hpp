@@ -18,19 +18,33 @@ public:
 
     static void checkGLError(const char* function, const char* file, int line) {
         GLenum error = glGetError();
+        bool hasError = false;
         while (error != GL_NO_ERROR) {
+            hasError = true;
             const GLubyte* errorString = glewGetErrorString(error);
+
             std::stringstream errorLog;
             errorLog << "[Error in function: " << function << "]\n";
             errorLog << "\tFile: " << file << ", line: " << line << "\n";
             errorLog << "\tCode: " << error << " - " << errorString;
+
             Logger::log(LogType::OPENGL, errorLog.str());
             error = glGetError();
         }
+        glGetError(); //to not repeat the same log
+
+#ifdef _DEBUG
+        if (hasError) {
+            __debugbreak();
+        }
+#endif
     }
 
     static void debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity,
         GLsizei length, const GLchar* message, const void* userParam) {
+
+        static std::string lastLogMessage = "";
+
         std::stringstream logString;
         logString << message << " [ID: " << id << "]\n";
 
@@ -100,7 +114,11 @@ public:
             break;
         }
 
-        Logger::log(LogType::OPENGL, logString.str());
+        std::string newLogMessage = logString.str();
+        if (newLogMessage != lastLogMessage) {
+            Logger::log(LogType::OPENGL, newLogMessage);
+            lastLogMessage = newLogMessage;
+        }
     }
 
     static void checkGLversion() {

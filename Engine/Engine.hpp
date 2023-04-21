@@ -5,17 +5,15 @@
 
 #include "Core/Window.hpp"
 #include "GUI/GUI.hpp"
-
 #include "Graphics/Camera.hpp"
 #include "Graphics/Renderer.hpp"
-
-#include "Objects/Sphere.hpp"
+#include "World/World.hpp"
+ 
 
 class Engine {
 public:
 
-	Engine() : m_window(), m_renderer(), m_GUI(m_window, m_renderer), m_camera(),
-		m_sphere(glm::vec4(0.4f, 0.1f, 0.96f, 1.0f), SphereQuality::HIGH) 
+	Engine() : m_window(), m_renderer(), m_GUI(m_window, m_renderer), m_world()
 	{
 		glfwSetWindowUserPointer(m_window.getWindow(), this);
 		glfwSetWindowSizeCallback(m_window.getWindow(), Engine::windowSizeCallback);
@@ -23,10 +21,25 @@ public:
 		glfwSetScrollCallback(m_window.getWindow(), Engine::scrollCallback);
 
 		m_renderer.recreateFramebuffer(m_GUI.getViewportWidth(), m_GUI.getViewportHeight());
-		m_renderer.bindSphere(m_sphere);
+		m_renderer.getStarProgram().attachShader(ShaderType::VERTEX, "Shaders/vx_Star.shader");
+		m_renderer.getStarProgram().attachShader(ShaderType::FRAGMENT, "Shaders/fr_Star.shader");
+		m_renderer.getStarProgram().link();
+
+		m_renderer.getModelProgram().attachShader(ShaderType::VERTEX, "Shaders/vx_Model.shader");
+		m_renderer.getModelProgram().attachShader(ShaderType::FRAGMENT, "Shaders/fr_Model.shader");
+		m_renderer.getModelProgram().link();
+
+		m_world.getCamera().onViewportResized(m_GUI.getViewportWidth(), m_GUI.getViewportHeight());
+		m_renderer.bindModel(m_world.getGround());
+		m_renderer.bindModel(m_world.getStar());
+		for (auto& model : m_world.getModels()) {
+			m_renderer.bindModel(model);
+		}
+
 	}
 
 	void shutdown() {
+		m_renderer.shutdown();
 		m_GUI.shutdown();
 		m_window.shutdown();
 	}
@@ -51,8 +64,7 @@ private:
 	Window m_window;
 	GUI m_GUI;
 	Renderer m_renderer;
-	Camera m_camera;
-	Sphere m_sphere; //temp
+	World m_world;
 
 	float m_deltaTime = 0.0f;
 	float m_lastFrame = 0.0f;
@@ -63,44 +75,37 @@ private:
 		glfwPollEvents();
 
 		if (glfwGetKey(m_window.getWindow(), GLFW_KEY_W) == GLFW_PRESS)
-			m_camera.move(Camera::Direction::FORWARD, m_deltaTime);
+			m_world.getCamera().move(Camera::Direction::FORWARD, m_deltaTime);
 		if (glfwGetKey(m_window.getWindow(), GLFW_KEY_S) == GLFW_PRESS)
-			m_camera.move(Camera::Direction::BACKWARD, m_deltaTime);
+			m_world.getCamera().move(Camera::Direction::BACKWARD, m_deltaTime);
 		if (glfwGetKey(m_window.getWindow(), GLFW_KEY_A) == GLFW_PRESS)
-			m_camera.move(Camera::Direction::LEFT, m_deltaTime);
+			m_world.getCamera().move(Camera::Direction::LEFT, m_deltaTime);
 		if (glfwGetKey(m_window.getWindow(), GLFW_KEY_D) == GLFW_PRESS)
-			m_camera.move(Camera::Direction::RIGHT, m_deltaTime);
+			m_world.getCamera().move(Camera::Direction::RIGHT, m_deltaTime);
 	}
 
 	void update() {
 		if (m_GUI.isViewportResized()) {
 			m_renderer.recreateFramebuffer(m_GUI.getViewportWidth(), m_GUI.getViewportHeight());
+			m_world.getCamera().onViewportResized(m_GUI.getViewportWidth(), m_GUI.getViewportHeight());
 			m_GUI.clearViewportResizeFlag();
 		}
 
 		//TEMP
-		if (m_GUI.isViewportHovered()) {
+		if (m_GUI.isViewportFocused() && m_GUI.isViewportHovered()) {
 			double xpos, ypos;
 			glfwGetCursorPos(m_window.getWindow(), &xpos, &ypos);
 			processCursor(xpos, ypos);
 		}
-			
+
+		m_world.update(m_deltaTime);
+
 	}
 
-	void render() {
-		glViewport(0, 0, m_GUI.getViewportWidth(), m_GUI.getViewportHeight());
+	void render() {	
 
-		mat4 model = mat4(1.0f);
-		mat4 view = m_camera.getViewMatrix();
-		mat4 projection = m_camera.getProjectionMatrix(m_GUI.getViewportWidth(), m_GUI.getViewportHeight());
+		m_renderer.renderWorld(m_world);
 
-		
-		m_renderer.setMat4("model", model);
-		m_renderer.setMat4("view", view);
-		m_renderer.setMat4("projection", projection);
-		m_renderer.setVec4("color", m_sphere.color);
-
-		m_renderer.renderSphere(m_sphere);
 		m_GUI.render(m_renderer.getImage());
 
 		m_window.swapBuffers();
@@ -133,14 +138,14 @@ private:
 		lastY = ypos;
 
 		if (m_GUI.isViewportHovered() && m_GUI.isViewportRightClicked()) {
-			m_camera.mouseLook(xoffset, yoffset, true);
+			m_world.getCamera().mouseLook(xoffset, yoffset, true);
 		}
 		
 			
 	}
 
 	void processScroll(double yoffset) {
-		m_camera.scrollZoom(static_cast<float>(yoffset));
+		m_world.getCamera().scrollZoom(static_cast<float>(yoffset));
 	}
 
 	//////////GLFW CALLBACKS

@@ -60,7 +60,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Dependencies\imgui;$(ProjectDir)Dependencies;%(AdditionalDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Dependencies\imgui;$(ProjectDir)Dependencies;%(AdditionalDirectories);$(ProjectDir)Shaders\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -83,7 +83,7 @@ xcopy /y "$(SolutionDir)Libraries\bin\glew32.dll" "$(TargetDir)"</Command>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Dependencies\imgui;$(ProjectDir)Dependencies;%(AdditionalDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Dependencies\imgui;$(ProjectDir)Dependencies;%(AdditionalDirectories);$(ProjectDir)Shaders\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -109,8 +109,10 @@ xcopy /y "$(SolutionDir)Libraries\bin\glew32.dll" "$(TargetDir)"</Command>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\imgui\.editorconfig" />
-    <None Include="Shaders\Fragment.shader" />
-    <None Include="Shaders\Vertex.shader" />
+    <None Include="Shaders\fr_Model.shader" />
+    <None Include="Shaders\fr_Star.shader" />
+    <None Include="Shaders\vx_Model.shader" />
+    <None Include="Shaders\vx_Star.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Time.hpp" />
@@ -125,14 +127,19 @@ xcopy /y "$(SolutionDir)Libraries\bin\glew32.dll" "$(TargetDir)"</Command>
     <ClInclude Include="Engine.hpp" />
     <ClInclude Include="Graphics\Camera.hpp" />
     <ClInclude Include="Graphics\GLdebug.hpp" />
+    <ClInclude Include="Graphics\Light.hpp" />
     <ClInclude Include="Graphics\Renderer.hpp" />
     <ClInclude Include="Core\Logger.hpp" />
+    <ClInclude Include="Graphics\Shader.hpp" />
     <ClInclude Include="GUI\Widgets\Console.hpp" />
     <ClInclude Include="Core\Window.hpp" />
     <ClInclude Include="GUI\GUI.hpp" />
     <ClInclude Include="GUI\Widgets\Metrics.hpp" />
     <ClInclude Include="GUI\Widgets\Settings.hpp" />
-    <ClInclude Include="Objects\Sphere.hpp" />
+    <ClInclude Include="Model\Generators.hpp" />
+    <ClInclude Include="Model\Mesh.hpp" />
+    <ClInclude Include="Model\Model.hpp" />
+    <ClInclude Include="World\World.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

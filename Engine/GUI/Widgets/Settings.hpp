@@ -12,28 +12,22 @@ using namespace ImGui;
 class Settings {
 public:
 
-    Settings(Renderer& rendererRef) : m_rendererRef(rendererRef) {
-
-    }
+    Settings(Renderer& rendererRef) : m_rendererRef(rendererRef) {}
 
     void display() {
- 
-        Indent();
-        Text("Wireframe mode: ");
-        SameLine();
-        if (Button("ON"))
-            m_rendererRef.wireframeMode(true);
-        
-        SameLine();
-        Separator();
-        SameLine();
 
-        if (Button("OFF"))
-            m_rendererRef.wireframeMode(false);
+        //global options like changing sun position, color, intensity
+        //physics values like G, Time slow/speed up
+
+        //selected object options like change physical properties
+
     }
 
 private:
     ImGuiWindowFlags m_flags;
 
     Renderer& m_rendererRef;
+
+
+
 };

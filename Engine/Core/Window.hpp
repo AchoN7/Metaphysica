@@ -26,6 +26,8 @@ public:
         glfwSetWindowSizeLimits(m_window, m_width, m_height, GLFW_DONT_CARE, GLFW_DONT_CARE);
         glfwMakeContextCurrent(m_window);
         glfwSwapInterval(1);
+
+        glewInit();
     }
 
     void shutdown() {

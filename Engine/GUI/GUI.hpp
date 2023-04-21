@@ -31,6 +31,7 @@ public:
 
         m_viewportDimensions = ImVec2(800, 600);
         m_viewportFlags =  ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoCollapse;
+        m_viewportFocused = true;
         m_viewportResized = false;
         m_viewportHovered = false;
         m_viewportRightClicked = false;
@@ -105,6 +106,7 @@ public:
             m_viewportResized = true;
         }
 
+        m_viewportFocused = IsWindowFocused();
         m_viewportHovered = IsWindowHovered();
         m_viewportRightClicked = IsMouseDown(ImGuiMouseButton_Right);
 
@@ -121,6 +123,7 @@ public:
     int getViewportWidth() const { return static_cast<int>(m_viewportDimensions.x); }
     int getViewportHeight() const { return static_cast<int>(m_viewportDimensions.y); }
 
+    bool isViewportFocused() const { return m_viewportFocused; }
     bool isViewportResized() const { return m_viewportResized; }
     bool isViewportHovered() const { return m_viewportHovered; }
     bool isViewportRightClicked() const { return m_viewportRightClicked; }
@@ -142,6 +145,7 @@ private:
 
     ImVec2 m_viewportDimensions;
     unsigned int m_viewportFlags;
+    bool m_viewportFocused;
     bool m_viewportResized;
     bool m_viewportHovered;
     bool m_viewportRightClicked;
