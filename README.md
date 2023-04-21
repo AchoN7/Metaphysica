@@ -7,4 +7,4 @@ Developed in Visual Studio 22 with c++20, on Windows 10 64bit
 --
 Basic object rendering and 3d movement
 
-![alt text](./Metaphysica/Misc/img.jpg)
+<img src="https://raw.githubusercontent.com/AchoN7/Metaphysica/main/Metaphysica/Misc/img.jpg" alt="alt text">
