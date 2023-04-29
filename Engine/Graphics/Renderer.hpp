@@ -6,10 +6,10 @@
 
 #include "GLdebug.hpp"
 #include "Shader.hpp"
-#include "Camera.hpp"
-#include "Core/Logger.hpp"
 
-#include "World/World.hpp"
+#include "Core/Logger.hpp"
+#include "Scene/Camera.hpp"
+#include "Scene/Scene.hpp"
 
 class Renderer {
 public:
@@ -55,47 +55,39 @@ public:
         m_vpWidth = vpWidth;
         m_vpHeight = vpHeight;
         glViewport(0, 0, m_vpWidth, m_vpHeight);
-        glClearColor(0.0f, 0.0f, 0.3f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     } 
 
-    void renderWorld(World& world) {
+    void renderScene(Scene& scene) {
         GL(glBindFramebuffer(GL_FRAMEBUFFER, m_FBO));
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
+        //glEnable(GL_BLEND); 
+        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        glm::mat4 view = world.getCamera().getViewMatrix();
-        glm::mat4 projection = world.getCamera().getProjectionMatrix();
-        //glm::vec3 lightPos = world.getStarLight().position;
-        glm::vec3 lightDir = world.getStarLight().direction;
-        glm::vec3 lightColor = world.getStarLight().color;
-        glm::vec3 camPos = world.getCamera().getPosition();
+        disableDepthMask();
+        renderModel(scene.getSky());
+        enableDepthMask();
+        
+        disableDepthMask();
+        renderModel(scene.getStar());
+        enableDepthMask();
 
-        m_starProgram.bind();
-        m_starProgram.setUniformMat4("u_view", view);
-        m_starProgram.setUniformMat4("u_projection", projection);
-        renderStar(world.getStar());
-        m_starProgram.unbind();
+        renderModel(scene.getTerrain());
 
-        m_modelProgram.bind();
-        m_modelProgram.setUniformMat4("u_view", view);
-        m_modelProgram.setUniformMat4("u_projection", projection);
-        //m_modelProgram.setUniformVec3("u_lightPosition", lightPos);
-        m_modelProgram.setUniformVec3("u_lightDirection", lightDir);
-        m_modelProgram.setUniformVec3("u_lightColor", lightColor);
-        m_modelProgram.setUniformVec3("u_cameraPosition", camPos);
-
-        renderModel(world.getGround());
-
-        for (auto& model : world.getModels()) {
+        /*for (auto& model : world.getModels()) {
             renderModel(model);
-        }
+        }*/
+
+        
+        
        
-        m_modelProgram.unbind();
+        
+
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    Shader& getStarProgram() { return m_starProgram; }
-    Shader& getModelProgram() { return m_modelProgram; }
     GLuint getImage() const { return m_image; }
 
     void shutdown() {
@@ -170,9 +162,6 @@ public:
 
 private:
 
-    Shader m_modelProgram;
-    Shader m_starProgram;
-
 	GLuint m_image = 0;
 	GLuint m_FBO = 0;
     GLuint m_RBO = 0;
@@ -180,35 +169,16 @@ private:
     int m_vpWidth = 0;
     int m_vpHeight = 0;
 
-    void renderStar(Model& star) {
-        auto& mesh = *star.getMesh();
-        auto& material = star.getMaterial();
-
-        m_starProgram.setUniformMat4("u_model", star.getModelMatrix());
-        m_starProgram.setUniformVec3("u_starColor", material.color);
-
-        
-        disableDepthMask();
-        GL(glBindVertexArray(mesh.VAO));
-
-        GL(glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0));
-
-        glBindVertexArray(0);
-        enableDepthMask();
-    }
-
     void renderModel(Model& model) {
-        auto& mesh = *model.getMesh();
-        auto& material = model.getMaterial();
+        model.getProgram().bind();
 
-        m_modelProgram.setUniformMat4("u_model", model.getModelMatrix());
-        m_modelProgram.setUniformVec3("u_modelColor", material.color);
+        GL(glBindVertexArray(model.getMesh()->VAO));
 
-        GL(glBindVertexArray(mesh.VAO));
-
-        GL(glDrawElements(GL_TRIANGLES, mesh.indices.size(), GL_UNSIGNED_INT, 0));
+        GL(glDrawElements(GL_TRIANGLES, model.getMesh()->indices.size(), GL_UNSIGNED_INT, 0));
 
         glBindVertexArray(0);
+
+        model.getProgram().unbind();
     }
 	
 };

@@ -12,12 +12,15 @@
 #include "Widgets/Console.hpp"
 #include "Widgets/Metrics.hpp" 
 
+#include "Graphics/Renderer.hpp"
+#include "Scene/Scene.hpp"
+
 using namespace ImGui;
 
 class GUI {
 public:
 
-	GUI(const Window& window, Renderer& rendererRef) : m_windowRef(window), m_rendererRef(rendererRef), m_settings(rendererRef) {
+	GUI(const Window& window, Renderer& rendererRef, Scene& sceneRef) : m_windowRef(window), m_rendererRef(rendererRef), m_settings(sceneRef) {
         CreateContext();
         ImGui_ImplGlfw_InitForOpenGL(window.getWindow(), true);
         ImGui_ImplOpenGL3_Init("#version 460");

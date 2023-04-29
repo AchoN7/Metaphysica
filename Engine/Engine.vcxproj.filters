@@ -39,10 +39,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\imgui\.editorconfig" />
-    <None Include="Shaders\vx_Model.shader" />
-    <None Include="Shaders\fr_Model.shader" />
-    <None Include="Shaders\vx_Star.shader" />
-    <None Include="Shaders\fr_Star.shader" />
+    <None Include="Shaders\Model.vert" />
+    <None Include="Shaders\Model.frag" />
+    <None Include="Shaders\Star.vert" />
+    <None Include="Shaders\Star.frag" />
+    <None Include="Shaders\Terrain.vert" />
+    <None Include="Shaders\Terrain.frag" />
+    <None Include="Shaders\Sky.vert" />
+    <None Include="Shaders\Sky.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Window.hpp">
@@ -90,7 +94,7 @@
     <ClInclude Include="GUI\Widgets\Console.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Camera.hpp">
+    <ClInclude Include="Scene\Camera.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\GLdebug.hpp">
@@ -111,13 +115,31 @@
     <ClInclude Include="Model\Mesh.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="World\World.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\Shader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Light.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Material.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Uniform.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Scene.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Terrain.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Star.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\Sky.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Physics\Physics.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

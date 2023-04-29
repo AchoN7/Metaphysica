@@ -109,10 +109,14 @@ xcopy /y "$(SolutionDir)Libraries\bin\glew32.dll" "$(TargetDir)"</Command>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\imgui\.editorconfig" />
-    <None Include="Shaders\fr_Model.shader" />
-    <None Include="Shaders\fr_Star.shader" />
-    <None Include="Shaders\vx_Model.shader" />
-    <None Include="Shaders\vx_Star.shader" />
+    <None Include="Shaders\Model.frag" />
+    <None Include="Shaders\Sky.frag" />
+    <None Include="Shaders\Sky.vert" />
+    <None Include="Shaders\Star.frag" />
+    <None Include="Shaders\Model.vert" />
+    <None Include="Shaders\Star.vert" />
+    <None Include="Shaders\Terrain.frag" />
+    <None Include="Shaders\Terrain.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Time.hpp" />
@@ -125,12 +129,15 @@ xcopy /y "$(SolutionDir)Libraries\bin\glew32.dll" "$(TargetDir)"</Command>
     <ClInclude Include="Dependencies\imgui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\imgui\imstb_truetype.h" />
     <ClInclude Include="Engine.hpp" />
-    <ClInclude Include="Graphics\Camera.hpp" />
+    <ClInclude Include="Physics\Physics.hpp" />
+    <ClInclude Include="Scene\Camera.hpp" />
     <ClInclude Include="Graphics\GLdebug.hpp" />
     <ClInclude Include="Graphics\Light.hpp" />
+    <ClInclude Include="Graphics\Material.hpp" />
     <ClInclude Include="Graphics\Renderer.hpp" />
     <ClInclude Include="Core\Logger.hpp" />
     <ClInclude Include="Graphics\Shader.hpp" />
+    <ClInclude Include="Graphics\Uniform.hpp" />
     <ClInclude Include="GUI\Widgets\Console.hpp" />
     <ClInclude Include="Core\Window.hpp" />
     <ClInclude Include="GUI\GUI.hpp" />
@@ -139,7 +146,10 @@ xcopy /y "$(SolutionDir)Libraries\bin\glew32.dll" "$(TargetDir)"</Command>
     <ClInclude Include="Model\Generators.hpp" />
     <ClInclude Include="Model\Mesh.hpp" />
     <ClInclude Include="Model\Model.hpp" />
-    <ClInclude Include="World\World.hpp" />
+    <ClInclude Include="Scene\Scene.hpp" />
+    <ClInclude Include="Scene\Sky.hpp" />
+    <ClInclude Include="Scene\Star.hpp" />
+    <ClInclude Include="Scene\Terrain.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

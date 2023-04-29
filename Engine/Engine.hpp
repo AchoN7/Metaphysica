@@ -5,15 +5,15 @@
 
 #include "Core/Window.hpp"
 #include "GUI/GUI.hpp"
-#include "Graphics/Camera.hpp"
+
 #include "Graphics/Renderer.hpp"
-#include "World/World.hpp"
  
+#include "Scene/Scene.hpp"
 
 class Engine {
 public:
 
-	Engine() : m_window(), m_renderer(), m_GUI(m_window, m_renderer), m_world()
+	Engine() : m_window(), m_renderer(), m_activeScene(), m_GUI(m_window, m_renderer, m_activeScene)
 	{
 		glfwSetWindowUserPointer(m_window.getWindow(), this);
 		glfwSetWindowSizeCallback(m_window.getWindow(), Engine::windowSizeCallback);
@@ -21,20 +21,15 @@ public:
 		glfwSetScrollCallback(m_window.getWindow(), Engine::scrollCallback);
 
 		m_renderer.recreateFramebuffer(m_GUI.getViewportWidth(), m_GUI.getViewportHeight());
-		m_renderer.getStarProgram().attachShader(ShaderType::VERTEX, "Shaders/vx_Star.shader");
-		m_renderer.getStarProgram().attachShader(ShaderType::FRAGMENT, "Shaders/fr_Star.shader");
-		m_renderer.getStarProgram().link();
 
-		m_renderer.getModelProgram().attachShader(ShaderType::VERTEX, "Shaders/vx_Model.shader");
-		m_renderer.getModelProgram().attachShader(ShaderType::FRAGMENT, "Shaders/fr_Model.shader");
-		m_renderer.getModelProgram().link();
+		m_activeScene.getCamera().onViewportResized(m_GUI.getViewportWidth(), m_GUI.getViewportHeight());
 
-		m_world.getCamera().onViewportResized(m_GUI.getViewportWidth(), m_GUI.getViewportHeight());
-		m_renderer.bindModel(m_world.getGround());
-		m_renderer.bindModel(m_world.getStar());
-		for (auto& model : m_world.getModels()) {
+		m_renderer.bindModel(m_activeScene.getTerrain());
+		m_renderer.bindModel(m_activeScene.getStar());
+		m_renderer.bindModel(m_activeScene.getSky());
+		/*for (auto& model : m_activeScene->getModels()) {
 			m_renderer.bindModel(model);
-		}
+		}*/
 
 	}
 
@@ -64,7 +59,8 @@ private:
 	Window m_window;
 	GUI m_GUI;
 	Renderer m_renderer;
-	World m_world;
+
+	Scene m_activeScene;
 
 	float m_deltaTime = 0.0f;
 	float m_lastFrame = 0.0f;
@@ -75,19 +71,19 @@ private:
 		glfwPollEvents();
 
 		if (glfwGetKey(m_window.getWindow(), GLFW_KEY_W) == GLFW_PRESS)
-			m_world.getCamera().move(Camera::Direction::FORWARD, m_deltaTime);
+			m_activeScene.getCamera().move(Camera::Direction::FORWARD, m_deltaTime);
 		if (glfwGetKey(m_window.getWindow(), GLFW_KEY_S) == GLFW_PRESS)
-			m_world.getCamera().move(Camera::Direction::BACKWARD, m_deltaTime);
+			m_activeScene.getCamera().move(Camera::Direction::BACKWARD, m_deltaTime);
 		if (glfwGetKey(m_window.getWindow(), GLFW_KEY_A) == GLFW_PRESS)
-			m_world.getCamera().move(Camera::Direction::LEFT, m_deltaTime);
+			m_activeScene.getCamera().move(Camera::Direction::LEFT, m_deltaTime);
 		if (glfwGetKey(m_window.getWindow(), GLFW_KEY_D) == GLFW_PRESS)
-			m_world.getCamera().move(Camera::Direction::RIGHT, m_deltaTime);
+			m_activeScene.getCamera().move(Camera::Direction::RIGHT, m_deltaTime);
 	}
 
 	void update() {
 		if (m_GUI.isViewportResized()) {
 			m_renderer.recreateFramebuffer(m_GUI.getViewportWidth(), m_GUI.getViewportHeight());
-			m_world.getCamera().onViewportResized(m_GUI.getViewportWidth(), m_GUI.getViewportHeight());
+			m_activeScene.getCamera().onViewportResized(m_GUI.getViewportWidth(), m_GUI.getViewportHeight());
 			m_GUI.clearViewportResizeFlag();
 		}
 
@@ -98,13 +94,13 @@ private:
 			processCursor(xpos, ypos);
 		}
 
-		m_world.update(m_deltaTime);
+		m_activeScene.update(m_deltaTime);
 
 	}
 
 	void render() {	
 
-		m_renderer.renderWorld(m_world);
+		m_renderer.renderScene(m_activeScene);
 
 		m_GUI.render(m_renderer.getImage());
 
@@ -138,14 +134,14 @@ private:
 		lastY = ypos;
 
 		if (m_GUI.isViewportHovered() && m_GUI.isViewportRightClicked()) {
-			m_world.getCamera().mouseLook(xoffset, yoffset, true);
+			m_activeScene.getCamera().mouseLook(xoffset, yoffset, true);
 		}
 		
 			
 	}
 
 	void processScroll(double yoffset) {
-		m_world.getCamera().scrollZoom(static_cast<float>(yoffset));
+		m_activeScene.getCamera().scrollZoom(static_cast<float>(yoffset));
 	}
 
 	//////////GLFW CALLBACKS

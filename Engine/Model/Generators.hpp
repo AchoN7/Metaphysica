@@ -78,23 +78,27 @@ namespace Generators {
         }
     }
 
-    static void generateSquare(Mesh& mesh) {
+    static void generateRectangle(Mesh& mesh, float length, float width) {
+        const float halfLength = length / 2.0f;
+        const float halfWidth = width / 2.0f;
+        
         mesh.vertices.clear();
         mesh.indices.clear();
 
-        const float halfSideLength = 0.5f;
         const glm::vec3 vertices[] = {
-            glm::vec3(-halfSideLength, halfSideLength, 0.0f),
-            glm::vec3(halfSideLength, halfSideLength, 0.0f),
-            glm::vec3(halfSideLength, -halfSideLength, 0.0f),
-            glm::vec3(-halfSideLength, -halfSideLength, 0.0f)
+            glm::vec3(-halfLength, halfWidth, 0.0f),
+            glm::vec3(halfLength, halfWidth, 0.0f),
+            glm::vec3(halfLength, -halfWidth, 0.0f),
+            glm::vec3(-halfLength, -halfWidth, 0.0f)
         };
+
         const glm::vec3 normals[] = {
             glm::vec3(0.0f, 0.0f, 1.0f),
             glm::vec3(0.0f, 0.0f, 1.0f),
             glm::vec3(0.0f, 0.0f, 1.0f),
             glm::vec3(0.0f, 0.0f, 1.0f)
         };
+
         const unsigned int indices[] = {
             0, 1, 3,
             1, 2, 3

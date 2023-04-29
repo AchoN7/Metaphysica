@@ -7,6 +7,7 @@
 
 #include "GLdebug.hpp"
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 enum ShaderType {
     VERTEX = GL_VERTEX_SHADER,
@@ -32,48 +33,29 @@ public:
         GL(glShaderSource(shader, 1, &shaderCodePtr, nullptr));
         GL(glCompileShader(shader));
 
-        GLint status;
-        glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-
-        if (status == GL_TRUE) {
-            Logger::log(LogType::INFO, "Shader compilation successful.");
-            GL(glAttachShader(m_programID, shader));
-        }
-        else {
-            GLint logLength;
-            glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
-            char* log = new char[logLength + 1];
-            glGetShaderInfoLog(shader, logLength, NULL, log);
-            Logger::log(LogType::INFO, "Shader compilation fail. Log: \n", log);
-            delete[] log;
-        }  
-
+        COMPILE_STATUS(shader);
+        GL(glAttachShader(m_programID, shader));
         m_shaders.push_back(shader);
     }
 
     void link() { 
         GL(glLinkProgram(m_programID)); 
-
-        GLint status;
-        glGetProgramiv(m_programID, GL_LINK_STATUS, &status);
-
-        if (status == GL_TRUE) {
-            Logger::log(LogType::INFO, "Program link successful.");
-        }
-        else {
-            GLint logLength;
-            glGetProgramiv(m_programID, GL_INFO_LOG_LENGTH, &logLength);
-            char* log = new char[logLength + 1];
-            glGetProgramInfoLog(m_programID, logLength, NULL, log);
-            Logger::log(LogType::ERROR, "Program link fail. Log: ", log);
-            delete[] log;
-        }
-
+        LINK_STATUS(m_programID);
         m_shaders.clear();
     }
 
-    void bind() { GL(glUseProgram(m_programID)); m_isBound = true; }
-    void unbind() { GL(glUseProgram(0)); m_isBound = false; }
+    void bind() { 
+        if (m_isBound) return;
+        GL(glUseProgram(m_programID)); 
+        m_isBound = true; 
+    }
+
+    void unbind() { 
+        if (m_isBound) {
+            GL(glUseProgram(0));
+            m_isBound = false;
+        }   
+    }
 
     void setUniformFloat(const char* name, const float val) {
         if (!m_isBound) return;

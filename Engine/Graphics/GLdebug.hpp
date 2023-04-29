@@ -8,13 +8,53 @@
 #include "Core/Logger.hpp"
 
 #ifdef _DEBUG
-#define GL(func) do { func; GLdebug::checkGLError(#func, __FILE__, __LINE__); } while (0)
+
+    #define GL(func) do { func; GLdebug::checkGLError(#func, __FILE__, __LINE__); } while (0)
+    #define COMPILE_STATUS(shader) GLdebug::shaderCompileStatus(shader);
+    #define LINK_STATUS(programID) GLdebug::programLinkStatus(programID);    
+
 #else
-#define GL(func) func
+    
+    #define GL(func) func
+    #define COMPILE_STATUS(shader)
+    #define LINK_STATUS(programID)
+
 #endif
 
 class GLdebug {
 public:
+
+    static void shaderCompileStatus(GLuint shader) {
+        GLint status;
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+
+        if (status == GL_TRUE) {
+            Logger::log(LogType::INFO, "Shader compilation successful.");
+        }
+        else {
+            GLint logLength;
+            glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
+            std::string log(logLength, '\0');
+            glGetShaderInfoLog(shader, logLength, NULL, &log[0]);
+            Logger::log(LogType::ERROR, "Shader compilation fail. Reason: \n", log);
+        }
+    }
+
+    static void programLinkStatus(GLuint programID) {
+        GLint status;
+        glGetProgramiv(programID, GL_LINK_STATUS, &status);
+
+        if (status == GL_TRUE) {
+            Logger::log(LogType::INFO, "Program link successful.");
+        }
+        else {
+            GLint logLength;
+            glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &logLength);
+            std::string log(logLength, '\0');
+            glGetProgramInfoLog(programID, logLength, NULL, &log[0]);
+            Logger::log(LogType::ERROR, "Program link fail. Reason: \n", log);
+        }
+    }
 
     static void checkGLError(const char* function, const char* file, int line) {
         GLenum error = glGetError();

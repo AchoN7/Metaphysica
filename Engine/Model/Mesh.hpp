@@ -4,10 +4,6 @@
 
 #include <glm/glm.hpp>
 
-struct Material {
-	glm::vec3 color;
-};
-
 struct Vertex {
 	glm::vec3 position;
 	glm::vec3 normal;
