@@ -10,6 +10,6 @@ Basic object rendering and 3d movement
 ![Image](Misc/img.jpg)
 
 --
-Blinn-Phong shading and Shadow Mapping
+(6.5.2023) Blinn-Phong shading and Shadow Mapping
 
 ![Image](Misc/shadowsAndBlinnPhong.JPG)
