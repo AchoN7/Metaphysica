@@ -65,3 +65,6 @@ public:
 private:
     ImGuiWindowFlags m_flags;
 };
+
+//TODO:: separate into own window
+//make the others Scene specific

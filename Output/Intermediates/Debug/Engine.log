@@ -1,11 +1,4 @@
-﻿  main.cpp
-C:\VSrepos\Metaphyisca\Engine\Core\Window.hpp(19,36): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\VSrepos\Metaphyisca\Engine\Core\Window.hpp(20,38): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\VSrepos\Metaphyisca\Engine\Graphics\Renderer.hpp(177,1): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-C:\VSrepos\Metaphyisca\Engine\GUI\GUI.hpp(30,70): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\VSrepos\Metaphyisca\Engine\GUI\GUI.hpp(30,50): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\VSrepos\Metaphyisca\Engine\GUI\GUI.hpp(123,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\VSrepos\Metaphyisca\Engine\GUI\GUI.hpp(123,35): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+﻿  Scene.cpp
   Engine.vcxproj -> C:\VSrepos\Metaphyisca\Output\Binaries\Debug\Engine.exe
   C:\VSrepos\Metaphyisca\Libraries\bin\glfw3.dll
   1 File(s) copied

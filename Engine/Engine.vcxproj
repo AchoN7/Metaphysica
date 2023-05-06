@@ -61,6 +61,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Dependencies\imgui;$(ProjectDir)Dependencies;%(AdditionalDirectories);$(ProjectDir)Shaders\</AdditionalIncludeDirectories>
+      <EnableModules>false</EnableModules>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -84,6 +85,7 @@ xcopy /y "$(SolutionDir)Libraries\bin\glew32.dll" "$(TargetDir)"</Command>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Dependencies\imgui;$(ProjectDir)Dependencies;%(AdditionalDirectories);$(ProjectDir)Shaders\</AdditionalIncludeDirectories>
+      <EnableModules>false</EnableModules>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -99,24 +101,32 @@ xcopy /y "$(SolutionDir)Libraries\bin\glew32.dll" "$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Core\GLdebug.cpp" />
     <ClCompile Include="Dependencies\imgui\imgui.cpp" />
     <ClCompile Include="Dependencies\imgui\imgui_draw.cpp" />
     <ClCompile Include="Dependencies\imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="Dependencies\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="Dependencies\imgui\imgui_tables.cpp" />
     <ClCompile Include="Dependencies\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="Graphics\Material.cpp" />
+    <ClCompile Include="Graphics\Renderer.cpp" />
+    <ClCompile Include="Core\Engine.cpp" />
+    <ClCompile Include="GUI\GUI.cpp" />
+    <ClCompile Include="GUI\Root.cpp" />
+    <ClCompile Include="GUI\Viewport.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Scene\Camera.cpp" />
+    <ClCompile Include="Core\Window.cpp" />
+    <ClCompile Include="Scene\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\imgui\.editorconfig" />
     <None Include="Shaders\Model.frag" />
+    <None Include="Shaders\Shadow.frag" />
+    <None Include="Shaders\Shadow.vert" />
     <None Include="Shaders\Sky.frag" />
     <None Include="Shaders\Sky.vert" />
-    <None Include="Shaders\Star.frag" />
     <None Include="Shaders\Model.vert" />
-    <None Include="Shaders\Star.vert" />
-    <None Include="Shaders\Terrain.frag" />
-    <None Include="Shaders\Terrain.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Time.hpp" />
@@ -128,10 +138,15 @@ xcopy /y "$(SolutionDir)Libraries\bin\glew32.dll" "$(TargetDir)"</Command>
     <ClInclude Include="Dependencies\imgui\imstb_rectpack.h" />
     <ClInclude Include="Dependencies\imgui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\imgui\imstb_truetype.h" />
-    <ClInclude Include="Engine.hpp" />
+    <ClInclude Include="Core\Engine.hpp" />
+    <ClInclude Include="GUI\Editor.hpp" />
+    <ClInclude Include="GUI\Root.hpp" />
+    <ClInclude Include="GUI\Widgets\Assets.hpp" />
+    <ClInclude Include="GUI\Viewport.hpp" />
+    <ClInclude Include="GUI\Widgets\ModelCreator.hpp" />
     <ClInclude Include="Physics\Physics.hpp" />
     <ClInclude Include="Scene\Camera.hpp" />
-    <ClInclude Include="Graphics\GLdebug.hpp" />
+    <ClInclude Include="Core\GLdebug.hpp" />
     <ClInclude Include="Graphics\Light.hpp" />
     <ClInclude Include="Graphics\Material.hpp" />
     <ClInclude Include="Graphics\Renderer.hpp" />
@@ -148,8 +163,6 @@ xcopy /y "$(SolutionDir)Libraries\bin\glew32.dll" "$(TargetDir)"</Command>
     <ClInclude Include="Model\Model.hpp" />
     <ClInclude Include="Scene\Scene.hpp" />
     <ClInclude Include="Scene\Sky.hpp" />
-    <ClInclude Include="Scene\Star.hpp" />
-    <ClInclude Include="Scene\Terrain.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

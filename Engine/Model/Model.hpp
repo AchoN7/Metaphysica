@@ -21,7 +21,9 @@ public:
         m_mesh(std::make_shared<Mesh>()),
         m_forceMagnitude(0.0f),
         m_forceDirection(glm::vec3(0.0f))
-    {}
+    {
+        updateModelMatrix();
+    }
 
     void setMesh(std::shared_ptr<Mesh> mesh) {
         m_mesh = mesh;

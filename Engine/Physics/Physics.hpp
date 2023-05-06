@@ -3,22 +3,16 @@
 class Physics {
 public:
 
-	Physics() : m_physicsOn(false) {}
-
-	//for now, only sphere collisions with the planet
-	void updateStar(Star& star, float deltaTime) {
-		if (!m_physicsOn) return;
-
-		float timeFactor = 100;
-		glm::vec3 newOffset = glm::rotate(star.getOffsetFromCamera(), glm::radians(deltaTime / 100), star.getAxisOfRotation());
-		star.setOffsetFromCamera(newOffset);
-	}
+	Physics() : m_physicsOn(false), m_timeFactor(1) {}
 
 	void pause() { if (m_physicsOn) m_physicsOn = false; }
 	void resume() { if (!m_physicsOn) m_physicsOn = true; }
+	void speedup() { m_timeFactor = 10; }
+	void normal() { m_timeFactor = 1; }
 
 private:
 
 	bool m_physicsOn;
+	unsigned int m_timeFactor;
 
 };

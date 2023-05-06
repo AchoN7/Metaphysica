@@ -15,7 +15,10 @@ public:
     }
 
     void display() {
-
+        //current scene time
+        //fps 
+        //number of triangles
+        //number of objects
     }
 
 private:

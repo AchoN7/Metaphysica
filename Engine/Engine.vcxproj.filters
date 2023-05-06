@@ -36,17 +36,45 @@
     <ClCompile Include="Dependencies\imgui\imgui_draw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GUI\Root.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\GLdebug.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\GUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Engine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\Viewport.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\imgui\.editorconfig" />
     <None Include="Shaders\Model.vert" />
     <None Include="Shaders\Model.frag" />
-    <None Include="Shaders\Star.vert" />
-    <None Include="Shaders\Star.frag" />
-    <None Include="Shaders\Terrain.vert" />
-    <None Include="Shaders\Terrain.frag" />
     <None Include="Shaders\Sky.vert" />
     <None Include="Shaders\Sky.frag" />
+    <None Include="Shaders\Shadow.vert" />
+    <None Include="Shaders\Shadow.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Window.hpp">
@@ -79,7 +107,7 @@
     <ClInclude Include="GUI\GUI.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine.hpp">
+    <ClInclude Include="Core\Engine.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Logger.hpp">
@@ -97,7 +125,7 @@
     <ClInclude Include="Scene\Camera.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\GLdebug.hpp">
+    <ClInclude Include="Core\GLdebug.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GUI\Widgets\Metrics.hpp">
@@ -130,16 +158,25 @@
     <ClInclude Include="Scene\Scene.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Scene\Terrain.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\Star.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Scene\Sky.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Physics\Physics.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\Widgets\Assets.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\Root.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\Viewport.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\Editor.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\Widgets\ModelCreator.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,7 +5,7 @@
 #include <fstream>
 #include <sstream>
 
-#include "GLdebug.hpp"
+#include "Core/GLdebug.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -55,6 +55,12 @@ public:
             GL(glUseProgram(0));
             m_isBound = false;
         }   
+    }
+
+    void setUniformInt(const char* name, const int val) {
+        if (!m_isBound) return;
+        GLint location = glGetUniformLocation(m_programID, name);
+        GL(glUniform1i(location, val););
     }
 
     void setUniformFloat(const char* name, const float val) {

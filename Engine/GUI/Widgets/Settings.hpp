@@ -7,7 +7,7 @@
 #include "Scene/Scene.hpp"
 
 using namespace ImGui;
-
+ 
 class Settings {
 public:
 
@@ -21,6 +21,9 @@ public:
         //selected object options like change physical properties
         if (Button("Stop Physics")) { m_sceneRef.pausePhysics(); }
         if (Button("Resume Physics")) { m_sceneRef.resumePhysics(); }
+        if (Button("Speed up time")) { m_sceneRef.speedupTime(); }
+        if (Button("Normal time")) { m_sceneRef.normalTime(); }
+
     }
 
 private:

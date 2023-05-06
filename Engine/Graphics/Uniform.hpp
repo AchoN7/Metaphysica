@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "GLdebug.hpp"
+#include "Core/GLdebug.hpp"
 
 class Uniform {
 public:
