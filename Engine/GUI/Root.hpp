@@ -13,6 +13,7 @@ private:
 
 	ImVec2 m_position;
 	ImVec2 m_dimensions;
+	ImVec4 m_bgColor;
 	unsigned int m_flags;
 
 };

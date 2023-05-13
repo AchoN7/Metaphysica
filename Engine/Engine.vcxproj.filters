@@ -60,10 +60,31 @@
     <ClCompile Include="Graphics\Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GUI\Viewport.cpp">
+    <ClCompile Include="Editor\Viewport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Scene\Scene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\Shapes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Editor\Settings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\Generators.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\ShadowMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -119,7 +140,7 @@
     <ClInclude Include="Core\Time.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GUI\Widgets\Console.hpp">
+    <ClInclude Include="Editor\Console.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Scene\Camera.hpp">
@@ -128,10 +149,10 @@
     <ClInclude Include="Core\GLdebug.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GUI\Widgets\Metrics.hpp">
+    <ClInclude Include="Editor\Metrics.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GUI\Widgets\Settings.hpp">
+    <ClInclude Include="Editor\Settings.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Model\Model.hpp">
@@ -152,31 +173,25 @@
     <ClInclude Include="Graphics\Material.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Uniform.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Scene\Scene.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\Sky.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Physics\Physics.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GUI\Widgets\Assets.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GUI\Root.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GUI\Viewport.hpp">
+    <ClInclude Include="Editor\Viewport.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GUI\Editor.hpp">
+    <ClInclude Include="Editor\Editor.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GUI\Widgets\ModelCreator.hpp">
+    <ClInclude Include="Editor\Shapes.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\ShadowMap.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

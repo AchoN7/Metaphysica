@@ -13,11 +13,7 @@ Renderer::Renderer() :
  m_image(0),
  m_FBO(0),
  m_RBO(0),
- m_shadowMapProgram(),
- m_depthFBO(0),
- m_depthMap(0),
- m_depthMapWidth(2 * 1024),
- m_depthMapHeight(2 * 1024),
+ m_shadowMap(),
  m_vpWidth(0),
  m_vpHeight(0) {
 
@@ -26,34 +22,6 @@ Renderer::Renderer() :
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(GLdebug::debugCallback, nullptr);
 #endif
-
-    //create resources for shadow mapping
-    glGenFramebuffers(1, &m_depthFBO);
-    glGenTextures(1, &m_depthMap);
-
-    glBindTexture(GL_TEXTURE_2D, m_depthMap);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, m_depthMapWidth, m_depthMapHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-    glm::vec4 borderColor(1.0f);
-    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(borderColor));
-
-    glBindFramebuffer(GL_FRAMEBUFFER, m_depthFBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthMap, 0);
-    glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    m_shadowMapProgram.attachShader(ShaderType::VERTEX, "Shaders/Shadow.vert");
-    m_shadowMapProgram.attachShader(ShaderType::FRAGMENT, "Shaders/Shadow.frag");
-    m_shadowMapProgram.link();
 }
 
 void Renderer::recreateFramebuffer(int vpWidth, int vpHeight) {
@@ -91,10 +59,10 @@ void Renderer::recreateFramebuffer(int vpWidth, int vpHeight) {
 }
 
 void Renderer::renderScene(Scene& scene) {
-    //shadow pass
-    renderShadowMap(scene);
 
-    
+    //glCullFace(GL_FRONT);
+    m_shadowMap.shadowPass(scene);
+    //glCullFace(GL_BACK);
 
     GL(glBindFramebuffer(GL_FRAMEBUFFER, m_FBO));
     glViewport(0, 0, m_vpWidth, m_vpHeight);
@@ -107,11 +75,9 @@ void Renderer::renderScene(Scene& scene) {
 
     for (auto& model : scene.getModels()) {
         auto& modelProgram = model->getProgram();
+        m_shadowMap.bind();
         modelProgram.bind();
-        GL(glBindTexture(GL_TEXTURE_2D, m_depthMap));
-        GL(glActiveTexture(GL_TEXTURE0));
-        modelProgram.setUniformInt("u_shadowMap", 0);
-
+        modelProgram.setUniformInt("u_shadowMap", 0); //0 is the tex position
 
         renderModel(*model);
         modelProgram.unbind();
@@ -121,6 +87,10 @@ void Renderer::renderScene(Scene& scene) {
 }
 
 GLuint Renderer::getImage() const { return m_image; }
+
+ShadowMap& Renderer::getShadowMap() {
+    return m_shadowMap;
+}
 
 Renderer::~Renderer() {
     if (glIsTexture(m_image)) glDeleteTextures(1, &m_image);
@@ -190,6 +160,9 @@ void Renderer::enableBackfaceCull() { glEnable(GL_CULL_FACE); }
 void Renderer::disableDepthMask() { glDepthMask(GL_FALSE); }
 void Renderer::disableBackfaceCull() { glDisable(GL_CULL_FACE); }
 
+void Renderer::turnOnWireframe() { glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); }
+void Renderer::turnOffWireframe() { glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); }
+
 #pragma endregion
 
 
@@ -199,26 +172,4 @@ void Renderer::renderModel(Model& model) {
     GL(glDrawElements(GL_TRIANGLES, model.getMesh()->indices.size(), GL_UNSIGNED_INT, 0));
 
     glBindVertexArray(0);
-}
-
-void Renderer::renderShadowMap(Scene& scene) {
-    
-
-    GL(glBindFramebuffer(GL_FRAMEBUFFER, m_depthFBO));
-    glViewport(0, 0, m_depthMapWidth, m_depthMapHeight);
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
-
-    m_shadowMapProgram.bind();
-    glm::mat4 lightSpaceMatrix = scene.getLights().front()->getLightSpaceMatrix();
-    m_shadowMapProgram.setUniformMat4("u_lightSpaceMatrix", lightSpaceMatrix);
-
-    for (auto& model : scene.getModels()) {
-        m_shadowMapProgram.setUniformMat4("u_model", model->getModelMatrix());
-        renderModel(*model);
-    }
-
-    m_shadowMapProgram.unbind();
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

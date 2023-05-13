@@ -9,12 +9,13 @@ Root::Root(int width, int height) {
         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
         ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBringToFrontOnFocus;
 
+    m_bgColor = ImVec4(0.25f, 0.25f, 0.25f, 1.0f);
 }
 
 void Root::display() {
 
     PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-    PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.25f, 0.25f, 0.25f, 1.0f));
+    PushStyleColor(ImGuiCol_WindowBg, m_bgColor);
     SetNextWindowPos(m_position);
     SetNextWindowSize(m_dimensions);
     Begin("Root", nullptr, m_flags);
@@ -29,7 +30,7 @@ void Root::display() {
             if (MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
             EndMenu();
         }
-        ImGui::EndMenuBar();
+        EndMenuBar();
     }
 
 

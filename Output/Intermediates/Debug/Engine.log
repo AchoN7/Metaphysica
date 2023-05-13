@@ -1,4 +1,18 @@
-﻿  Scene.cpp
+﻿  Settings.cpp
+  Shapes.cpp
+  Light.cpp
+  Renderer.cpp
+C:\VSrepos\Metaphyisca\Engine\Graphics\Renderer.cpp(172,5): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+  Engine.cpp
+  Shader.cpp
+  ShadowMap.cpp
+C:\VSrepos\Metaphyisca\Engine\Graphics\ShadowMap.cpp(36,9): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+  GUI.cpp
+  Viewport.cpp
+  main.cpp
+  Model.cpp
+  Scene.cpp
+  Generating Code...
   Engine.vcxproj -> C:\VSrepos\Metaphyisca\Output\Binaries\Debug\Engine.exe
   C:\VSrepos\Metaphyisca\Libraries\bin\glfw3.dll
   1 File(s) copied

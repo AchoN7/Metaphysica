@@ -44,6 +44,8 @@ private:
     float m_movementSpeed;
     float m_sensitivity;
 
+    bool m_perspective;
+
     void updateCameraVectors();
 
 };

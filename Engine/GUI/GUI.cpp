@@ -8,8 +8,8 @@
 
 using namespace ImGui;
 
-GUI::GUI(const Window& window, Renderer& rendererRef, Scene& sceneRef) 
-    : m_windowRef(window), m_rendererRef(rendererRef), m_editor(sceneRef),
+GUI::GUI(const Window& window) 
+    : m_windowRef(window),
     m_root(window.getWidth(), window.getHeight()) {
 
     IMGUI_CHECKVERSION();
@@ -29,21 +29,30 @@ GUI::~GUI() {
     DestroyContext();
 }
 
+void GUI::addGUIelement(GUIelement* element) {
+    if (element != nullptr)
+        m_GUIelements.push_back(element);
+    else
+        Logger::log(LogType::ERROR, "Passed a non-existing GUI element!");
+}
+
 void GUI::update() {
 
 }
 
-void GUI::display(unsigned int image) {
+void GUI::display() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     NewFrame();
     //=============================================
 
     m_root.display();
-    m_viewport.display(image);
-    m_editor.display();
-    
+    //m_editor.display();
 
+    for (auto el : m_GUIelements) {
+        el->onGUIdisplay();
+    }
+ 
 
     //=============================================
     Render();

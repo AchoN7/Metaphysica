@@ -82,7 +82,7 @@ mat4 Camera::getViewMatrix() const {
 }
 
 mat4 Camera::getProjectionMatrix() const {
-    return perspective(radians(m_zoom), m_aspectRatio, 0.01f, 60000.0f);
+    return perspective(radians(m_zoom), m_aspectRatio, 0.01f, 1000.0f);
 }
 
 vec3 Camera::getPosition() const { return m_position; }

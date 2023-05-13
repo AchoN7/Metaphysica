@@ -9,6 +9,13 @@
 #include "Graphics/Renderer.hpp"
 #include "Scene/Scene.hpp"
 
+#include "Editor/Editor.hpp"
+#include "Editor/Viewport.hpp"
+#include "Editor/Metrics.hpp"
+#include "Editor/Settings.hpp"
+#include "Editor/Shapes.hpp"
+#include "Editor/Console.hpp"
+
 class Engine {
 public:
 
@@ -22,6 +29,13 @@ private:
 	Window m_window;
 	GUI m_GUI;
 	Renderer m_renderer;
+
+	std::unique_ptr<Editor> m_editor;
+	std::unique_ptr<Viewport> m_viewport;
+	std::unique_ptr<Metrics> m_metrics;
+	std::unique_ptr<Settings> m_settings;
+	std::unique_ptr<Shapes> m_shapes;
+	std::unique_ptr<Console> m_console;
 
 	Scene m_activeScene;
 

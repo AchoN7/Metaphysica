@@ -1,20 +1,32 @@
 #include "Engine.hpp"
 
-Engine::Engine() : m_window(), m_renderer(), m_activeScene(), m_GUI(m_window, m_renderer, m_activeScene), m_deltaTime(0.0f), m_lastFrame(0.0f)
+Engine::Engine() : m_window(), m_renderer(), m_activeScene(), m_GUI(m_window), m_deltaTime(0.0f), m_lastFrame(0.0f)
 {
 	glfwSetWindowUserPointer(m_window.getWindow(), this);
 	glfwSetWindowSizeCallback(m_window.getWindow(), Engine::windowSizeCallback);
 	//glfwSetCursorPosCallback(m_window.getWindow(), Engine::cursorCallback);
 	glfwSetScrollCallback(m_window.getWindow(), Engine::scrollCallback);
 
-	Viewport& viewportRef = m_GUI.getViewport();
-	m_renderer.recreateFramebuffer(viewportRef.getWidth(), viewportRef.getHeight());
-	m_activeScene.getCamera().onViewportResized(viewportRef.getWidth(), viewportRef.getHeight());
+	m_viewport = std::make_unique<Viewport>(m_renderer);
+	m_editor = std::make_unique<Editor>(m_activeScene);
+	m_settings = std::make_unique<Settings>(m_activeScene, m_renderer);
+	m_console = std::make_unique<Console>();
+	m_shapes = std::make_unique<Shapes>();
+	m_metrics = std::make_unique<Metrics>();
+
+	m_renderer.recreateFramebuffer(m_viewport->getWidth(), m_viewport->getHeight());
+	m_activeScene.getCamera().onViewportResized(m_viewport->getWidth(), m_viewport->getHeight());
 
 	for (auto& model : m_activeScene.getModels()) {
 		m_renderer.bindModel(*model);
 	}
 
+	m_GUI.addGUIelement(m_viewport.get());
+	m_GUI.addGUIelement(m_editor.get());
+	m_GUI.addGUIelement(m_settings.get());
+	m_GUI.addGUIelement(m_console.get());
+	m_GUI.addGUIelement(m_shapes.get());
+	m_GUI.addGUIelement(m_metrics.get());
 }
 
 Engine::~Engine() {}
@@ -34,8 +46,6 @@ void Engine::mainLoop() {
 	}
 }
 
-
-
 void Engine::inputs() {
 	//TODO: encapsulate in own class?
 	//TODO: make sure to move if the mouse is on the viewport
@@ -52,7 +62,7 @@ void Engine::inputs() {
 }
 
 void Engine::update() {
-	Viewport& viewportRef = m_GUI.getViewport();
+	auto& viewportRef = *m_viewport;
 	Camera& sceneCameraRef = m_activeScene.getCamera();
 
 	if (viewportRef.isResized()) {
@@ -69,15 +79,12 @@ void Engine::update() {
 	}
 
 	m_activeScene.update(m_deltaTime);
-
+	m_viewport->update();
 }
 
 void Engine::render() {
-
 	m_renderer.renderScene(m_activeScene);
-
-	m_GUI.display(m_renderer.getImage());
-
+	m_GUI.display();
 	m_window.swapBuffers();
 }
 
@@ -88,7 +95,7 @@ void Engine::updateDimensions(int windowWidth, int windowHeight) {
 }
 
 void Engine::processCursor(double xposIn, double yposIn) {
-	Viewport& viewportRef = m_GUI.getViewport();
+	auto& viewportRef = *m_viewport;
 
 	static bool firstMouse = true;
 	static float lastX = static_cast<float>(viewportRef.getWidth() / 2.0f);

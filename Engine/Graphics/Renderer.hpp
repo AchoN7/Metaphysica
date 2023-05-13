@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 
 #include "Scene/Scene.hpp"
+#include "ShadowMap.hpp"
 
 class Renderer {
 public:
@@ -14,6 +15,7 @@ public:
     void renderScene(Scene& scene);
 
     GLuint getImage() const;
+    ShadowMap& getShadowMap();
 
 #pragma region ** STATICS **
 
@@ -30,6 +32,9 @@ public:
     void disableDepthMask();
     void disableBackfaceCull();
 
+    void turnOnWireframe();
+    void turnOffWireframe();
+
 #pragma endregion
 
 private:
@@ -38,18 +43,12 @@ private:
 	GLuint m_FBO;
     GLuint m_RBO;
 
-    Shader m_shadowMapProgram;
-    GLuint m_depthFBO;
-    GLuint m_depthMap;
-    unsigned int m_depthMapWidth;
-    unsigned int m_depthMapHeight;
-	
     int m_vpWidth;
     int m_vpHeight;
 
-    void renderModel(Model& model);
+    ShadowMap m_shadowMap;
 
-    void renderShadowMap(Scene& scene);
+    void renderModel(Model& model);
 	
 };
 

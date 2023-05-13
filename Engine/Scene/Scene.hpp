@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Sky.hpp"
+#include "Model/Model.hpp"
 #include "Camera.hpp"
 #include "Physics/Physics.hpp"
+#include "Graphics/Light.hpp"
 
 class Scene {
 public:
@@ -12,7 +13,7 @@ public:
 	Camera& getCamera() { return m_camera; }
 	Physics& getPhysics() { return m_physics; }
 	std::vector<std::shared_ptr<Model>>& getModels() { return m_models; }
-	std::vector<std::shared_ptr<Light>>& getLights() { return m_lights; }
+	std::shared_ptr<Light>& getLight() { return m_light; }
 
 	void update(float deltaTime);
 
@@ -23,10 +24,12 @@ public:
 
 private:
 
+	 
 	Camera m_camera;
 	Physics m_physics;
 
+	// a single directional light for now;
+	std::shared_ptr<Light> m_light;
 	std::vector<std::shared_ptr<Model>> m_models;
-	std::vector<std::shared_ptr<Light>> m_lights;
 
 };
